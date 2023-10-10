@@ -1,0 +1,202 @@
+---
+title: "Matriks Pembobot Spasial"
+author: "Farik Firsteadi Haristiyanto"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Matriks Penimbang Spasial Dengan Data Pulau Jawa
+
+```{r}
+library(spdep)
+library(rgdal)
+```
+
+### Membuka file shp JAWA
+
+```{r}
+jabar<-readOGR(dsn="C:/Users/faeri/OneDrive/Documents/Statistika/Semester 5/Regresi Spasial STA 1352/Responsi 4/petajabar27/Peta Jabar 27.shp", layer="Peta Jabar 27")
+
+jawa<-readOGR(dsn="C:/Users/faeri/OneDrive/Documents/Statistika/Semester 5/Regresi Spasial STA 1352/Responsi 2/Map of Jawa (original)/jawa.shp")
+
+sf_use_s2(FALSE)
+```
+
+## Matriks Bobot Ketetanggaan
+
+### Queen Continguity
+
+```{r}
+queenjawa.w <- poly2nb(jawa,queen = TRUE)
+summary(queenjawa.w)
+```
+
+```{r}
+queenjawa.w1<-nb2mat(queenjawa.w,style="B",zero.policy = TRUE)
+View(queenjawa.w1)
+```
+
+```{r}
+plot(jawa, border="snow", col="gray")
+coords<-coordinates(jawa)
+plot(queenjawa.w, coords, add = TRUE, col = "red")
+```
+
+### Rook Continguity
+
+```{r}
+rookjawa.w <- poly2nb(jawa, queen=FALSE)
+summary(rookjawa.w)
+```
+
+```{r}
+rookjawa.w1<-nb2mat(rookjawa.w,style = "B", zero.policy = TRUE)
+View(rookjawa.w1)
+```
+
+```{r}
+plot(jawa, border="snow",col="gray")
+coords<-coordinates(jawa)
+plot(rookjawa.w, coords, add = TRUE, col = "blue")
+```
+
+### Perbandingan Queen dan Rook Continguity
+
+```{r}
+plot(jawa, border="snow",col="gray")
+plot(queenjawa.w, coords, add = TRUE, col = "red")
+plot(rookjawa.w, coords, add = TRUE, col = "blue")
+```
+
+## Matriks Bobot Dengan Jarak
+
+```{r}
+coords<-coordinates(jawa)
+```
+
+### K Nearest Neighbor
+
+k = 2
+
+```{r}
+w.knn2<-knearneigh(coords, k=2, longlat = TRUE)
+
+knn2.w<-nb2listw(knn2nb(w.knn2))
+summary(knn2.w)
+```
+
+K-nn weight matrix - plot
+
+```{r}
+plot(jawa, border="snow",col="gray")
+plot(knn2.w, coords, add = TRUE, col = "red")
+```
+
+k=4
+
+```{r}
+w.knn4<-knearneigh(coords, k=4, longlat = TRUE)
+
+knn4.w<-nb2listw(knn2nb(w.knn4))
+summary(knn4.w)
+```
+
+K-nn weight matrix - plot
+
+```{r}
+plot(jawa, border="snow", col="gray")
+plot(knn4.w, coords, add = TRUE, col = "blue")
+```
+
+### Jarak Ambang (Treshold Weight)
+
+```{r}
+w.dnn1 <- dnearneigh(coords, 0, 1)
+summary(w.dnn1)
+```
+
+D-nn weight matrix - plot
+
+```{r}
+plot(jawa, border="snow", col="gray")
+plot(w.dnn1,coords,add=TRUE,col="green")
+```
+
+### Inverse Weight
+
+```{r}
+D <- as.matrix(dist(coordinates(jawa), method="euclidean"))
+head(D)
+```
+
+```{r}
+w=1/D
+head(w)
+```
+
+inverse weight matrix - row-normalized
+
+```{r}
+diag(w)<-0
+rtot<-rowSums(w, na.rm = TRUE)
+w_std<-w/rtot
+head(w_std)
+```
+
+```{r}
+rowSums(w_std, na.rm=TRUE)
+```
+
+Matriks penimbang invers jarak
+
+```{r}
+invers.w<-mat2listw(w, style="W")
+summary(invers.w)
+```
+
+```{r}
+invers.w2<-mat2listw(w_std)
+summary(invers.w2)
+```
+
+inverse weight matrix - plot
+
+```{r}
+plot(jawa, border="snow",col="gray")
+plot(invers.w, coords, add = TRUE, col = "orange")
+```
+
+### Exponential Weight
+
+```{r}
+alpha<-2
+w.expo<-exp(-alpha*D)
+```
+
+Exponential weight matrix - row-normalized
+
+```{r}
+diag(w.expo)<-0
+rtotexpo<-rowSums(w.expo, na.rm=TRUE)
+wexpo_std<-w.expo/rtotexpo
+```
+
+Matriks penimbang eksponensial
+
+```{r}
+eksp.w=mat2listw(w.expo, style="W")
+summary(eksp.w)
+```
+
+```{r}
+eksp.w2=mat2listw(wexpo_std)
+summary(eksp.w2)
+```
+
+Inverse weight matrix - plot
+
+```{r}
+plot(jawa, border="snow", col="gray")
+coords<-coordinates(jawa)
+plot(eksp.w,coords, add = TRUE, col = "red")
+```

@@ -1,0 +1,192 @@
+---
+title: "Regresi Spasial - Minggu 2"
+author: "Farik Firsteadi Haristiyanto"
+date: "2023-09-06"
+output: html_document
+---
+
+# Data Vektor
+
+```{r}
+library(sp)
+data("meuse")
+class(meuse)
+head(meuse)
+```
+```{r}
+coordinates(meuse) <- c("x","y")
+class(meuse)
+plot(meuse, main = "points")
+```
+
+```{r}
+cc <- coordinates(meuse)
+m.sl <- SpatialLines(list(Lines(list(Line(cc)), "line1")))
+
+plot(m.sl, main = "lines")
+```
+
+```{r}
+#Objek SpatialLines dibuat dengan menggabungkan titik-titik secara berurutan
+
+data("meuse.riv")
+meuse.lst <- list(Polygons(list(Polygon(meuse.riv)), "meuse.riv"))
+meuse.pol <- SpatialPolygons(meuse.lst)
+
+plot(meuse.pol, col = "orange", main ="polygons")
+```
+
+```{r}
+data("meuse.grid")
+coordinates(meuse.grid) <- c("x","y")
+meuse.grid <- as(meuse.grid, "SpatialPixels")
+image(meuse.grid, col = "orange", main = "grid")
+```
+
+```{r}
+#Sebuah peta menjadi lebih mudah dibaca ketika kita menggabungkan beberapa elemen. Kita dapat menampilkan elemen dari yang dibuat di atas dengan menggunakan argumen add = TRUE.
+
+image(meuse.grid, col = "lightblue")
+plot(meuse.pol, col = "blue", add = T)
+plot(meuse, pch = 11 ,col = "red", add = T)
+```
+
+# Data Raster
+
+```{r}
+f <- system.file("external/test.grd", package="raster")
+library(raster)
+r <- raster(f)
+plot(r)
+```
+
+```{r}
+slogo <- stack(system.file("external/rlogo.grd", package="raster")) 
+plot(slogo)
+plotRGB(slogo,axes = TRUE, stretch = "lin", main = "rlogo")
+plotRGB(slogo,axes = TRUE, stretch = "hist", main = "rlogo")
+```
+
+```{r}
+datapop <- read.csv('http://bit.ly/Popgrowth2000', header=T, sep=',')
+
+#Dimensi data
+dim(datapop)
+
+#Struktur data
+str(datapop)
+
+#Tabel data
+head(datapop)
+     
+#Plot the data points
+coordinates(datapop) <- c("Longitude","Latitude")
+plot(datapop)
+
+size<-datapop$PopGrowth_2000/sum(datapop$PopGrowth_2000)
+plot(datapop,pch=20, col="steelblue", cex=size*100)
+```
+
+```{r}
+#Menambahkan peta dunia
+library(rworldmap)
+data(package="rworldmap")
+data(countriesCoarse,envir=environment(),package="rworldmap")
+
+#Peta dunia
+plot(countriesCoarse)
+
+#Peta dunia + Data pertumbuhan penduduk
+plot(countriesCoarse)
+plot(datapop,add=T, pch=20)
+
+#Rasterize
+library(raster)
+r <- raster(datapop)
+res(r)<-c(5,5)
+nc <- rasterize(coordinates(datapop), r, fun=mean, background=NA)
+plot(nc)
+plot(countriesCoarse, add=TRUE)
+```
+
+# Cara lain menampilkan peta
+```{r}
+#Ilustrasi di bawah ini dirujuk dari Data Technik (2019). Data tersedia pada package datasets, berisi 50 observasi dan 9 peubah.
+
+library(datasets)
+states<-as.data.frame(state.x77)
+head(states)
+
+#Visualisasi dengan ggplot2
+library(ggplot2)
+library(tidyverse)
+states$region <- tolower(rownames(states))
+states_map <- map_data("state")
+fact_join <- left_join(states_map, states, by = "region")
+ggplot(fact_join, aes(long, lat, group = group))+
+  geom_polygon(aes(fill = Population), color = "white")+
+  scale_fill_viridis_c(option = "C")+
+  theme_classic()
+
+#Variasi
+ggplot(fact_join, aes(long, lat, group = group))+
+  geom_polygon(aes(fill = Income), color = "white")+
+  scale_fill_viridis_c(option = "C")+
+  theme_classic()
+
+#Berikut apabila ingin menampilkan peubah lain, misalnya usia harapan hidup.
+fact_join$`Life Exp` <- as.numeric(fact_join$`Life Exp`)
+ggplot(fact_join, aes(long, lat, group = group))+
+geom_polygon(aes(fill = `Life Exp`), color = "white")+
+scale_fill_viridis_c(option = "C")+
+theme_classic()
+```
+
+# Ilustrasi : Data Cholera
+```{r}
+library(rgdal)
+
+#Melihat file dalam folder shapefile
+dsn <- paste("C:/Users/faeri/OneDrive/Documents/Statistika/Semester 5/Regresi Spasial STA 1352/Responsi 2/SnowGIS_SHP")
+list.files(dsn)
+
+ogrListLayers(dsn)
+ogrInfo(dsn, layer = "Cholera_Deaths")
+CholeraDeaths <- readOGR(dsn, layer = "Cholera_Deaths")
+summary(CholeraDeaths)
+
+class(CholeraDeaths)
+str(CholeraDeaths@data)
+```
+
+```{r}
+par(mfrow=c(1,2))
+plot(CholeraDeaths)
+plot(CholeraDeaths, pch=20, col="steelblue")
+
+library(leaflet)
+map <- leaflet() %>% setView(lng =  -0.13659, lat =51.51328 , zoom = 12)
+map %>% addTiles() 
+
+head(coordinates(CholeraDeaths))
+```
+
+### Seperti terlihat di atas, koordinat pada data CholeraDeaths diukur pada skala yang berbeda dengan peta yang diambil dari package leaflet. Terdapat beberapa macam coordinate reference system (CRS), beberapa diantaranya yang cukup populer adalah suatu set EPSG (European Petroleum Survey Group) berikut:
+
+EPSG:4326 juga dikenal sebagai WGS84, ukuran standard yang digunakan pada sistem GPS dan Google Earth.
+
+EPSG:3857 digunakan pada Google Maps, Open Street Maps, dsb.
+
+EPSG:27700 juga dikenal sebagai OSGB 1936, atau British National Grid: United Kingdom Ordnance Survey.
+
+```{r}
+# Tranformasi menjadi WGS84
+cholera_latlong <- CholeraDeaths %>% 
+  spTransform(CRS("+init=epsg:4326"))
+
+#Menggabungkan peta dan titik
+leaflet(data = CholeraDeaths) %>% 
+  addTiles() %>%
+  addMarkers(cholera_latlong@coords[,1], cholera_latlong@coords[,2])
+```
+

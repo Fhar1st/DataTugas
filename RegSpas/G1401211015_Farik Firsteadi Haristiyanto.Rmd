@@ -1,0 +1,166 @@
+---
+title: "Analisis Spasial Kepadatan & Jumlah Penduduk Jakarta Utara"
+author: "Farik Firsteadi Haristiyanto"
+date: "2023-09-19"
+output: html_document
+---
+
+## Membaca data peta choropleth Indonesia
+
+```{r}
+library(sf)
+
+Indonesia <- st_read("C:/Users/faeri/OneDrive/Documents/Statistika/Semester 5/Regresi Spasial STA 1352/Responsi 3/idn_adm_bps_20200401_shp/idn_admbnda_adm3_bps_20200401.shp", quiet = TRUE)
+
+library(dplyr)
+glimpse(Indonesia)
+```
+
+## Data pelengkap peta choropleth Kota Administratif Jakarta Utara
+
+```{r}
+JakUt <- read.csv("C:/Users/faeri/OneDrive/Documents/Statistika/Semester 5/Regresi Spasial STA 1352/Responsi 3/data demografi kota jakarta utara.csv")
+JakUt
+```
+
+## Mengabungkan data peta choropleth Indonesia dengan data kependudukan Kota Administratif Jakarta Utara
+
+```{r}
+MapJakUt <- Indonesia %>%
+  inner_join(JakUt, by = c("ADM3_PCODE" = "KodeBPS"))
+MapJakUt
+```
+
+## Visualisasi data peta Kota Administratif Jakarta Utara
+
+```{r}
+library(ggplot2)
+
+# Berdasarkan Jumlah Penduduk
+p <- ggplot() +
+  geom_sf(data=MapJakUt, aes(fill=JumlahPenduduk))
+p
+
+#Berdasarkan LKepadatan Penduduk
+a <- ggplot() +
+  geom_sf(data=MapJakUt, aes(fill=KepadatanPenduduk))
+a
+```
+
+## Kustomisasi visualisasi peta Kota Administratif Jakarta Utara
+
+### Berdasarkan Jumlah Penduduk
+
+```{r}
+colorPalette = RColorBrewer::brewer.pal(5,"YlGnBu")
+yBreak = seq(106.72, 116.86, by=0.04)
+
+p + scale_fill_gradient(low = "yellow",
+                        high = "orange",
+                        name = "Jumlah Penduduk") +
+  labs(title = "Jumlah Penduduk Kota Administratif Jakarta Utara") +
+  theme(legend.text = element_text(size=7),
+        legend.title = element_text(size=7),
+        axis.text.x = element_text(size=7),
+        axis.text.y = element_text(size=7),
+        title = element_text(size=12, face='bold')) +
+        scale_x_continuous(breaks = yBreak)
+```
+
+### Berdasarkan Kepadatan Penduduk
+
+```{r}
+colorPalette = RColorBrewer::brewer.pal(5,"YlGnBu")
+yBreak = seq(106.72, 116.86, by=0.04)
+
+a + scale_fill_gradientn(colors = colorPalette,
+                       name = "Kepadatan Penduduk") +
+  labs(title = "Kepadatan Penduduk Kota Administratif Jakarta Utara")  +
+  theme(legend.text = element_text(size=7),
+        legend.title = element_text(size=7),
+        axis.text.x = element_text(size = 7),
+        axis.text.y = element_text(size = 7),
+        title = element_text(size=12, face='bold')) +
+  scale_x_continuous(breaks = yBreak)
+```
+
+## Visualisasi peta choroplet menggunakan paket leaflet
+
+### Berdasarkan Jumlah Penduduk
+
+```{r}
+library(leaflet)
+# membuat custom palette warna
+populationPalette <- colorNumeric(
+  palette = "YlGnBu",
+  domain = MapJakUt$JumlahPenduduk
+)
+
+# membuat custom popup
+popupLabel <- paste0(
+    "<b>Kecamatan ", MapJakUt$Kecamatan,"</b><br/>", 
+    "Jumlah Penduduk (jiwa): ", MapJakUt$JumlahPenduduk, "<br/>", 
+    "Luas Wilayah (km2): ", MapJakUt$LuasWilayah, "<br/>", 
+    "Kepadatan Penduduk (jiwa/km2): ", MapJakUt$KepadatanPenduduk) %>%
+  lapply(htmltools::HTML)
+
+# membuat peta leaflet
+leaflet(MapJakUt) %>% 
+  addProviderTiles(providers$CartoDB.PositronNoLabels, group = "Light Mode") %>%
+  addProviderTiles(providers$CartoDB.DarkMatterNoLabels, group = "Dark Mode") %>%
+  
+  addPolygons(weight = 1,
+              opacity = 1, 
+              fillOpacity = 0.9,
+              label = popupLabel,
+              color = ~populationPalette(JumlahPenduduk),
+              highlightOptions = highlightOptions(color = "white", 
+                                                  weight = 2, 
+                                                  bringToFront = TRUE) ) %>%
+  addLegend(position = "bottomright", 
+            pal = populationPalette, 
+            values = ~JumlahPenduduk,
+            title = "Jumlah\nPenduduk",
+            opacity = 1) %>%
+  
+  addLayersControl(position = 'topright',
+                   baseGroups = c("Light Mode", "Dark Mode"),
+                   options = layersControlOptions(collapsed = FALSE)) %>%
+  
+  setView(lat = -6.128, lng = 106.842, zoom = 11)
+```
+
+### Berdasarkan Kepadatan Penduduk
+
+```{r}
+# membuat custom palette warna
+populationPalette <- colorNumeric(
+  palette = "YlGnBu",
+  domain = MapJakUt$KepadatanPenduduk
+)
+
+# membuat peta leaflet
+leaflet(MapJakUt) %>% 
+  addProviderTiles(providers$CartoDB.PositronNoLabels, group = "Light Mode") %>%
+  addProviderTiles(providers$CartoDB.DarkMatterNoLabels, group = "Dark Mode") %>%
+  
+  addPolygons(weight = 1,
+              opacity = 1, 
+              fillOpacity = 0.9,
+              label = popupLabel,
+              color = ~populationPalette(KepadatanPenduduk),
+              highlightOptions = highlightOptions(color = "white", 
+                                                  weight = 2, 
+                                                  bringToFront = TRUE) ) %>%
+  addLegend(position = "bottomright", 
+            pal = populationPalette, 
+            values = ~KepadatanPenduduk,
+            title = "Kepadatan\nPenduduk",
+            opacity = 1) %>%
+  
+  addLayersControl(position = 'topright',
+                   baseGroups = c("Light Mode", "Dark Mode"),
+                   options = layersControlOptions(collapsed = FALSE)) %>%
+  
+  setView(lat = -6.128, lng = 106.842, zoom = 11)
+```

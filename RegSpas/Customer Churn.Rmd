@@ -1,0 +1,74 @@
+#Input Data
+```{r}
+library(readxl)
+data <- read_excel("~/Statistika/Semester 5/Regresi Spasial STA 1352/customer_churn.xlsx")
+View(customer_churn)
+summary(data)
+View(data)
+```
+
+#Model Awal
+```{r}
+model <- lm(y ~ x6+x7, data=data)
+summary(model)
+anova(model)
+hist(model$residuals)
+```
+
+#Eksplorasi
+##Menggunakan chart.Correlation()
+```{r}
+library(ggplot2)
+ggplot(data,aes(x=x6,y = seq_along(y))) + 
+geom_point(color = "mediumorchid4") + 
+xlab("\n\nFrequency of Use") + ylab("Customer Value\n\n") +
+theme(axis.title = element_text(face = "bold"))
+
+ggplot(data, aes(x=x7,y=y)) + 
+geom_point(color="steelblue") + 
+ylab("Customer Value\n\n") + xlab("\n\nFrequency of SMS")+
+theme(axis.title = element_text(face = "bold"))
+```
+
+##Multikolinearitas
+```{r}
+cor(data[c(6,7,13)])
+```
+
+##VIF
+```{r}
+model <- lm(y~x6+x7, data=data)
+library(car)
+vif(model)
+```
+
+#Model Regresi
+```{r}
+model <- lm(y~x6+x7, data=data)
+summary(model)
+```
+
+#Uji Asumsi
+##uji asumsi Gauss-Markov
+```{r}
+#1.nilai harapan = nol
+t.test(resid(model), mu = 0,) 
+#h0: nilai harapan sisaan=0
+
+#2.cek autokorelasi
+durbinWatsonTest(model) 
+#h0:tidak ada auto korelasi
+
+#3.ragam sisaan homogen
+plot(model, 1)
+
+library(lmtest)
+bptest(model)
+
+# 4.Uji kenormalan
+plot(model, 2)
+
+library(MASS)
+sresid <- studres(model) 
+shapiro.test(sresid)
+```
