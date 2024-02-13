@@ -1,0 +1,145 @@
+ID;Mice;Age (days);Years_Survival;Months_Survival;Status
+1;Conventional;45;0;1;No Tumor
+2;Conventional;198;0;6;No Tumor
+3;Conventional;215;0;7;No Tumor
+4;Conventional;217;0;7;No Tumor
+5;Conventional;257;0;8;No Tumor
+6;Conventional;262;0;8;No Tumor
+7;Conventional;266;0;8;No Tumor
+8;Conventional;371;1;12;No Tumor
+9;Conventional;381;1;12;Tumor
+10;Germ-free;412;1;13;No Tumor
+11;Conventional;431;1;14;No Tumor
+12;Conventional;447;1;14;No Tumor
+13;Conventional;454;1;15;No Tumor
+14;Conventional;459;1;15;No Tumor
+15;Conventional;475;1;15;No Tumor
+16;Conventional;477;1;15;Tumor
+17;Conventional;479;1;15;No Tumor
+18;Conventional;484;1;16;No Tumor
+19;Conventional;485;1;16;Tumor
+20;Conventional;500;1;16;No Tumor
+21;Conventional;502;1;16;No Tumor
+22;Conventional;503;1;16;No Tumor
+23;Conventional;505;1;16;No Tumor
+24;Conventional;508;1;16;No Tumor
+25;Conventional;515;1;17;Tumor
+26;Conventional;516;1;17;No Tumor
+27;Germ-free;524;1;17;No Tumor
+28;Conventional;531;1;17;No Tumor
+29;Conventional;539;1;17;Tumor
+30;Conventional;541;1;18;No Tumor
+31;Germ-free;546;1;18;Tumor
+32;Conventional;553;1;18;No Tumor
+33;Conventional;556;1;18;No Tumor
+34;Conventional;563;1;18;Tumor
+35;Conventional;565;1;18;Tumor
+36;Conventional;570;1;18;No Tumor
+37;Conventional;572;1;19;No Tumor
+38;Conventional;575;1;19;No Tumor
+39;Conventional;577;1;19;No Tumor
+40;Conventional;582;1;19;Tumor
+41;Conventional;585;1;19;No Tumor
+42;Conventional;588;1;19;No Tumor
+43;Conventional;594;1;19;No Tumor
+44;Conventional;600;1;19;No Tumor
+45;Conventional;601;1;20;No Tumor
+46;Conventional;603;1;20;Tumor
+47;Conventional;608;1;20;No Tumor
+48;Germ-free;609;1;20;Tumor
+49;Conventional;614;1;20;No Tumor
+50;Conventional;616;1;20;Tumor
+51;Conventional;616;1;20;No Tumor
+52;Conventional;624;1;20;Tumor
+53;Conventional;632;1;21;No Tumor
+54;Conventional;632;1;21;No Tumor
+55;Conventional;638;1;21;No Tumor
+56;Conventional;642;1;21;No Tumor
+57;Conventional;642;1;21;No Tumor
+58;Conventional;642;1;21;No Tumor
+59;Conventional;644;1;21;No Tumor
+60;Conventional;644;1;21;No Tumor
+61;Conventional;647;1;21;No Tumor
+62;Conventional;647;1;21;No Tumor
+63;Germ-free;647;1;21;No Tumor
+64;Germ-free;648;1;21;No Tumor
+65;Conventional;650;1;21;Tumor
+66;Conventional;651;1;21;Tumor
+67;Conventional;653;1;21;No Tumor
+68;Conventional;656;1;21;Tumor
+69;Conventional;659;1;21;Tumor
+70;Conventional;659;1;21;No Tumor
+71;Conventional;660;1;21;No Tumor
+72;Conventional;662;1;22;No Tumor
+73;Conventional;663;1;22;No Tumor
+74;Conventional;667;1;22;No Tumor
+75;Conventional;667;1;22;No Tumor
+76;Conventional;672;1;22;Tumor
+77;Conventional;673;1;22;No Tumor
+78;Conventional;673;1;22;No Tumor
+79;Conventional;677;1;22;No Tumor
+80;Conventional;679;1;22;Tumor
+81;Conventional;689;1;22;No Tumor
+82;Germ-free;692;1;23;Tumor
+83;Germ-free;692;1;23;Tumor
+84;Conventional;693;1;23;No Tumor
+85;Germ-free;695;1;23;No Tumor
+86;Conventional;698;1;23;Tumor
+87;Conventional;702;1;23;Tumor
+88;Conventional;709;1;23;Tumor
+89;Germ-free;710;1;23;Tumor
+90;Conventional;718;1;23;No Tumor
+91;Conventional;720;1;24;No Tumor
+92;Conventional;721;1;24;No Tumor
+93;Conventional;723;1;24;Tumor
+94;Conventional;728;1;24;No Tumor
+95;Conventional;731;2;24;Tumor
+96;Germ-free;752;2;25;Tumor
+97;Germ-free;753;2;25;Tumor
+98;Conventional;760;2;25;No Tumor
+99;Conventional;762;2;25;No Tumor
+100;Conventional;773;2;25;No Tumor
+101;Conventional;775;2;25;Tumor
+102;Conventional;777;2;25;No Tumor
+103;Conventional;779;2;25;Tumor
+104;Germ-free;781;2;26;Tumor
+105;Germ-free;782;2;26;Tumor
+106;Germ-free;785;2;26;No Tumor
+107;Germ-free;789;2;26;Tumor
+108;Conventional;795;2;26;Tumor
+109;Germ-free;808;2;26;Tumor
+110;Germ-free;810;2;26;Tumor
+111;Conventional;811;2;27;Tumor
+112;Germ-free;814;2;27;Tumor
+113;Germ-free;814;2;27;No Tumor
+114;Conventional;815;2;27;No Tumor
+115;Germ-free;817;2;27;No Tumor
+116;Conventional;838;2;27;Tumor
+117;Germ-free;842;2;28;Tumor
+118;Germ-free;846;2;28;Tumor
+119;Germ-free;851;2;28;Tumor
+120;Germ-free;851;2;28;No Tumor
+121;Germ-free;871;2;29;Tumor
+122;Germ-free;873;2;29;Tumor
+123;Germ-free;876;2;29;Tumor
+124;Germ-free;880;2;29;No Tumor
+125;Conventional;886;2;29;No Tumor
+126;Germ-free;888;2;29;Tumor
+127;Germ-free;888;2;29;Tumor
+128;Germ-free;890;2;29;Tumor
+129;Germ-free;894;2;29;Tumor
+130;Germ-free;896;2;29;Tumor
+131;Germ-free;911;2;30;Tumor
+132;Germ-free;913;2;30;Tumor
+133;Germ-free;913;2;30;No Tumor
+134;Germ-free;914;2;30;Tumor
+135;Germ-free;914;2;30;Tumor
+136;Germ-free;916;2;30;Tumor
+137;Germ-free;921;2;30;Tumor
+138;Germ-free;921;2;30;Tumor
+139;Germ-free;926;2;30;Tumor
+140;Germ-free;936;2;31;Tumor
+141;Germ-free;942;2;31;No Tumor
+142;Germ-free;945;2;31;Tumor
+143;Germ-free;986;2;32;No Tumor
+144;Germ-free;1008;2;33;Tumor
